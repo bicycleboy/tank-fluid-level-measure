@@ -5,10 +5,10 @@
 ## Overview
 
 A project to measure fluid level in a tank suitable for rural water tanks, septic tanks etc. While there are many solutions to the problem of sensing water in a tank, 
-this project uses a pressure sensor and Shelly for reasons discussed below. It can be standalone using the Shelly app or integrated into home assistant for 
+this project uses a pressure sensor and Shelly for reasons discussed below. It can be standalone using the Shelly app or integrated into [home assistant](https://www.home-assistant.io/) for 
 fancier displays and logic such as driving pumps. It requires power and relies on WiFi so probably not the right solution if the tank is more than say 50m from buildings.
 
-The finished product and the home assistant dashboard:
+Example home assistant dashboard:
 
 <img src="images/septic-dashboard.jpg" alt="Home Assistant Dashboard" width="300"/>
 
@@ -16,7 +16,7 @@ The finished product and the home assistant dashboard:
 
 - I believe this is more reliable and durable than alternatives
 - Pretty easy (compared to say esp32/esphome/aduino style solutions)
-- [Home Assistant](https://www.home-assistant.io/) integration allowing remote monitoring, automated transfer between tanks etc.
+- [Home Assistant](https://www.home-assistant.io/) integration allowing remote monitoring, automated transfer between tanks etc
 - Not so much a feature as a warning: this can be quite an expensive solution, but if you want to drive a pump, nothing like as expensive as a pump
 - In the case of septic tanks, knowing a pump out is or is not required without actually looking might save you money
 
@@ -48,7 +48,7 @@ your tank and your tank has WiFi signal or if it is easier to run a longer senso
 running 12v power to the top of your tank is the obvious option. In my case for a septic tank buried in the ground there was no obvious place to secure 
 the enclosure, wifi is weak and the Shelly might fry in the sun. Running a decent gauge power cable to the tank had a cost too.   
 
-The EARU brand sensors have a 0-10V output option and support DC10-30V input power (you need to select 0-10V when purchasing). Because of this I went with a Shelly Uni rather than a 5/3.3v esp32.  I also figured 12v was better for longish distances.  
+The EARU brand sensors have a 0-10V output option and support DC10-30V input power (you need to select 0-10V when purchasing). Because of this I went with a Shelly Uni rather than a 5/3.3v esp32.  I also figured 12v was better for longish distances to avoid voltage drop.  
 
 You can use a Shelly Uni Plus or if you want to drive a pump, a Shelly Plus Add On with Shelly Plus 1.  The advantage of the Plus versions is that they support a *Voltmeter threshold* 
 which in effect cuts out the noise from the sensor which otherwise may change voltage constantly.  Note that while you need mains power for your pump and can power a Shelly Plus 1 with mains power you still need to get 12v DC to the sensor.
@@ -120,7 +120,7 @@ sensor:
 ```
 
 ### Home Assistant Automations
-My automations are basic, if tank full/empty send me a message type stuff. Your favourite AI can generate anything tricky.  Here is a simple example using a template condition to detect a tank loosing water.  You might be more interested if the rate of water loss is unexpected or you are loosing water when no one is home to use it etc. 
+My automations are basic, if tank full/empty send me a message type stuff. Your favourite AI can generate anything tricky.  Here is a simple example using a template condition to detect a tank loosing water.  You might be more interested if the *rate* of water loss is unexpected or you are loosing water when no one is home to use it etc. 
 
 ```
 alias: Notify if tank loosing water
@@ -148,12 +148,13 @@ mode: single
 ## Step by Step Instructions
 
 1. Purchase the hardware, noting points above on choosing/measuring cable lengths
-2. Power up the shelly, connect to the AP and configure your wifi, update firmware etc as normal. You migtht also want to set a static IP address for the Shelly in your router 
+2. Power up the shelly, connect to the AP and configure your wifi, update firmware etc as normal for Shelly. You might also want to set a static IP address for the Shelly in your router 
 3. Before you climb up your tank, you might want to wire up the pressure sensor at this stage noting the wire colours in the diagram above and add the ADC peripheral to the Shelly in the App.  If you blow the sensor like a balloon you should see the voltage change
-5. Install the grommets in the enclosure and feed the power and sensor cable in, wire the sensor, power and Uni as per the wiring diagram, if you can see varying voltage in the Shelly App you are ready to add to home assistant
-8. Home assistant should auto-discover the Shelly, and create an ADC sensor
-9. Create the template and statistics sensors in your configuration.yaml as above
-10. Add to your dashboards and create automations as required
+4. Install the grommets in the enclosure and feed the power and sensor cable in, wire the sensor, power and Uni as per the wiring diagram, if you can see varying voltage in the Shelly App you are ready to add to home assistant
+5. Home assistant should auto-discover the Shelly, and create an ADC sensor
+6. Create the template and statistics sensors in your configuration.yaml as above
+7. Add to your dashboards and create automations as required
+8. Just because you can you might add a temperature sensor to the Uni 
 
 ## Troubleshooting
 
@@ -162,4 +163,4 @@ The only problems I can recall were basic wiring issues which can be checked wit
 
 ## License
 
-This project is free to use under the [MIT License](https://github.com/bicycleboy/tank-fluid-level-measure?tab=MIT-1-ov-file).
+MIT.
