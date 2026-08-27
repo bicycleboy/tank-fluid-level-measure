@@ -10,15 +10,15 @@ fancier displays and logic such as driving pumps. It requires power and relies o
 
 The finished product and the home assistant dashboard:
 
-<img src="images/septic-dashboard.png" alt="Home Assistant Dashboard" width="300"/>
+<img src="images/septic-dashboard.jpg" alt="Home Assistant Dashboard" width="300"/>
 
 ## Features
 
 - I believe this is more reliable and durable than alternatives
 - Pretty easy (compared to say esp32/esphome/aduino style solutions)
 - [Home Assistant](https://www.home-assistant.io/) integration allowing remote monitoring, automated transfer between tanks etc.
-- Not so much a feature as a warning: this can be quite an expensive solution, north of AUD$100, but if you want to drive a pump, nothing like as expensive as a pump
-- In the case of septic tanks, knowing a pump out is required without actually looking might save you money
+- Not so much a feature as a warning: this can be quite an expensive solution, but if you want to drive a pump, nothing like as expensive as a pump
+- In the case of septic tanks, knowing a pump out is or is not required without actually looking might save you money
 
 
 ## Hardware
@@ -36,9 +36,9 @@ The finished product and the home assistant dashboard:
 
 *Notes on hardware* 
 
-When I first researched this project I saw a number of people had tried ultrasonic sensors and the like but I found [this video](https://www.youtube.com/watch?v=N90C9Xge8Z4) and went with it. Lars' video has most of what you need to know, here I try to spell out the other stuff I learnt or forgot when I added more tanks.
+When I first researched this project I saw a number of people had tried ultrasonic sensors and the like but I found [this video](https://www.youtube.com/watch?v=N90C9Xge8Z4) and went with it. Lars' video has most of what you need to know, here I try to spell out the other stuff I learnt or forgot when I added more tanks (mostly the wiring colours!).
 
-A pressure sensor is expensive but basically just works while other methods don't seem to get rave reviews. 
+A pressure sensor is expensive but basically just works while other methods don't seem to get rave reviews. These EARU sensors looked suitable to last in drinking water and grey water for decades though they might be overkill. I have no experience of other brand sensors which may be cheaper, I can update this if others have. Similarly you can probably replace the Shelly with alternatives that can read a ADV voltage. 
 
 The range of the sensor you need is the depth of your tank.  
 
@@ -48,10 +48,10 @@ your tank and your tank has WiFi signal or if it is easier to run a longer senso
 running 12v power to the top of your tank is the obvious option. In my case for a septic tank buried in the ground there was no obvious place to secure 
 the enclosure, wifi is weak and the Shelly might fry in the sun. Running a decent gauge power cable to the tank had a cost too.   
 
-The EARU brand sensors have a 0-10V output option and support DC10-30V input power (you need to select 0-10V when purchasing). Because of this I went with a Shelly Uni rather than a 5/3.3v esp32.  I also figured 12v was better for longish distances.  I have no experience of other brand sensors but can update this if others have. Similarly you can probably replace the Shelly with alternatives that can read a ADV voltage. 
+The EARU brand sensors have a 0-10V output option and support DC10-30V input power (you need to select 0-10V when purchasing). Because of this I went with a Shelly Uni rather than a 5/3.3v esp32.  I also figured 12v was better for longish distances.  
 
 You can use a Shelly Uni Plus or if you want to drive a pump, a Shelly Plus Add On with Shelly Plus 1.  The advantage of the Plus versions is that they support a *Voltmeter threshold* 
-which in effect cuts out the noise from the sensor which otherwise may change voltage constantly.  Note that while you can power a Shelly Plus1 with mains power you still need to get 12v DC to the sensor.
+which in effect cuts out the noise from the sensor which otherwise may change voltage constantly.  Note that while you need mains power for your pump and can power a Shelly Plus 1 with mains power you still need to get 12v DC to the sensor.
 
 ## Tools
 - Screwdriver probably Phillips to match polycarbonate enclosure
@@ -60,7 +60,7 @@ which in effect cuts out the noise from the sensor which otherwise may change vo
 
 ##  Wiring diagram
 
-![Schematic](/images/KiCad%20schematic.png)
+![Schematic](/images/wiring.jpg)
 
 ## Software 
 
@@ -73,7 +73,8 @@ Using the Shelly App configure the ADC peripheral as normal.  I have not done mu
 Integration with Home Assistant opens up many possibilities like:
 
 - alerts when tanks are full or empty
-- alerts for water leaks taps left running etc
+- alerts for water leaks, taps left running etc
+- visibility on water use over time, i.e. how long can we last during a drought, how much water do we catch during rain
 - when combined with a mains relay (e.g. Shelly 1 Plus) and a pump:
   - automatically transfer water to another tank when full
   - scheduled transfers to feed animals etc
@@ -118,18 +119,45 @@ sensor:
     precision: 2
 ```
 
+### Home Assistant Automations
+My automations are basic, if tank full/empty send me a message type stuff. Your favourite AI can generate anything tricky.  Here is a simple example using a template condition to detect a tank loosing water.  You might be more interested if the rate of water loss is unexpected or you are loosing water when no one is home to use it etc. 
+
+```
+alias: Notify if tank loosing water
+description: ''
+triggers:
+  - trigger: state
+    entity_id:
+      - sensor.abc_tank_litres
+conditions:
+  - condition: template
+    value_template: |-
+      {% set old = trigger.from_state.state | float(9999) %}
+      {% set new = trigger.to_state.state | float(9999) %}
+      {{ new < (old + 8) }}
+actions:
+  - action: notify.mobile_app_my_iphone
+    metadata: {}
+    data:
+      message: ABC tank water level dropping
+      title: HA
+mode: single
+
+```
 
 ## Step by Step Instructions
 
-Purchase the hardware, noting points above on choosing cable lengths.
-1. Power up the shelly and connect to your wifi, update firmware etc.  At this stage you can power the Shelly 
+1. Purchase the hardware, noting points above on choosing/measuring cable lengths
+2. Power up the shelly, connect to the AP and configure your wifi, update firmware etc as normal. You migtht also want to set a static IP address for the Shelly in your router 
+3. Before you climb up your tank, you might want to wire up the pressure sensor at this stage noting the wire colours in the diagram above and add the ADC peripheral to the Shelly in the App.  If you blow the sensor like a balloon you should see the voltage change
+5. Install the grommets in the enclosure and feed the power and sensor cable in, wire the sensor, power and Uni as per the wiring diagram, if you can see varying voltage in the Shelly App you are ready to add to home assistant
+8. Home assistant should auto-discover the Shelly, and create an ADC sensor
+9. Create the template and statistics sensors in your configuration.yaml as above
+10. Add to your dashboards and create automations as required
 
 ## Troubleshooting
 
-### Hardware
-
-
-### Home Assistant integration issues
+The only problems I can recall were basic wiring issues which can be checked with a multimeter. If you have a loose connection you might trick the Shelly into resetting itself in which case it will revert to AP mode and need to be reconfigured. 
 
 
 ## License
