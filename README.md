@@ -24,7 +24,7 @@ Example home assistant dashboard:
 ## Hardware
 
 - Pressure sensor such as [EARU](https://earu-electric.com) [0-10V pressure sensor](https://www.aliexpress.com/item/4000098291819.html)
-- [Shelly Uni Plus](https://www.shelly.com/products/shelly-plus-uni) or [Shelly Add On](https://www.shelly.com/products/shelly-plus-add-on)
+- [Shelly Plus Uni](https://www.shelly.com/products/shelly-plus-uni) or [Shelly Add On](https://www.shelly.com/products/shelly-plus-add-on)
 - Waterproof polycarbonate enclosure around 10cm x 8cm
 - 12v DC power adapter
 - Cable for 12v run between power supply and enclosure/Shelly. (For longer runs check the gauge is thick enough to avoid voltage drop) 
@@ -50,7 +50,7 @@ the enclosure, wifi is weak and the Shelly might fry in the sun. Running a decen
 
 The EARU brand sensors have a 0-10V output option and support DC10-30V input power (you need to select 0-10V when purchasing). Because of this I went with a Shelly Uni rather than a 5/3.3v esp32.  I also figured 12v was better for longish distances to avoid voltage drop.  
 
-You can use a Shelly Uni Plus or if you want to drive a pump, a Shelly Plus Add On with Shelly Plus 1.  The advantage of the Plus versions is that they support a *Voltmeter threshold* 
+You can use a Shelly Plus Uni or if you want to drive a pump, a Shelly Plus Add On with Shelly Plus 1.  The advantage of the Plus versions is that they support a *Voltmeter threshold* 
 which in effect cuts out the noise from the sensor which otherwise may change voltage constantly.  Note that while you need mains power for your pump and can power a Shelly Plus 1 with mains power you still need to get 12v DC to the sensor.
 
 ## Tools
@@ -105,7 +105,7 @@ template:
         {% endif %}
 ```
 
-I first used the v1 Shelly Uni which worked fine except that the voltage changed every few seconds.  I created statistics sensors to smooth the output.  I kept them when I upgraded to the Shelly Uni Plus so that I had long term statistics. 
+I first used the v1 Shelly Uni which worked fine except that the voltage changed every few seconds.  I created statistics sensors to smooth the output.  I kept them when I upgraded to the Shelly Plus Uni so that I had long term statistics. 
 
 ```
 sensor:
