@@ -44,14 +44,14 @@ The range of the sensor you need is the depth of your tank.
 
 The length of the cable is the depth of your tank plus the distance to the location of your Shelly. So you need to decide if you are going to get power to
 your tank and your tank has WiFi signal or if it is easier to run a longer sensor cable. For a price EARU will make cable lengths of 
-25m, 50m (from memory maybe even 100m).  On Aliexpress you might have to message their support team to get a link for longer lengths. In most cases
-running 12v power to the top of your tank is the obvious option. In my case for a septic tank buried in the ground there was no obvious place to secure 
-the enclosure, wifi is weak and the Shelly might fry in the sun. Running a decent gauge power cable to the tank had a cost too.   
+25m, 50m (from memory maybe even 100m).  On Aliexpress you might have to message their support team to get a link for longer lengths. In most cases running 12v power to the top of your tank is the obvious option. For me, in one case for a septic tank buried in the ground there was no obvious place to secure the enclosure with the Shelly, wifi is weak and the Shelly might fry in the sun. So a long sensor cable was a tidy solution. 
 
 The EARU brand sensors have a 0-10V output option and support DC10-30V input power (you need to select 0-10V output when purchasing). Because of this I went with a Shelly Uni rather than a 5/3.3v esp32.  I also figured 12v was better for longish distances to avoid voltage drop.  
 
 You can use a Shelly Plus Uni or if you want to drive a pump, a Shelly Plus Add On with Shelly Plus 1.  The advantage of the Plus versions is that they support a *Voltmeter threshold* 
 which in effect cuts out the noise from the sensor which otherwise may change voltage constantly - and require a statistical sensor in Home Assistant to smooth the voltage.  Note that while you need mains power for your pump and can power a Shelly Plus 1 with mains power you still need to get 12v DC to the sensor.
+
+To power a pump with a a Shelly Plus 1 the wiring is as per the official Shelly docs, noting that the Plus 1 is a potential free relay so you can power the Shelly with 12v and switch up to a 16 amp mains load. One handy use of home assistant I found out to my cost is to run the pump daily for a few seconds to avoid it ceasing up when not used for months.  Wiring for the Add On uses VCC, GND and Data similar to the Uni. 
 
 ## Tools
 - Screwdriver probably Phillips to match polycarbonate enclosure
